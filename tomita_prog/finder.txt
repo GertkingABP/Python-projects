@@ -1,0 +1,39 @@
+#import mysql.connector
+import pymysql.cursors
+import pymysql
+import sys
+import os
+
+#ВСЕГО В БД 10016 НОВОСТЕЙ!
+
+counter = 1
+while counter < 10017:
+    result = 0
+    lenltr = 0
+    connection = pymysql.connect(host='localhost',
+                                 user='root',
+                                 password="",
+                                 db='news',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    with connection.cursor() as cur:
+        try:
+            cur.execute("select content from news where id = %d" %counter)
+            result = cur.fetchall()
+            if result:
+                newfile = open("contents.txt", "a+")
+                newfile.write('' + "\n")
+
+            for index in result:
+                ltr = []
+                ltr.append(index['content'])
+                lenltr = len(ltr)
+                for i in range(lenltr):
+                    newfile.write('{}'.format(ltr[i]))
+                    newfile.write("\t")
+                    print(ltr[i])
+                newfile.write("\n")
+        except:
+            print()
+
+    connection.close()
+    counter += 1
